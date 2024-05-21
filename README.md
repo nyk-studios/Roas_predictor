@@ -1,2 +1,2 @@
 # Roas_predictor
-A prediction model the assist in the Facebook ad campaign 
+A prediction model to assist with Facebook ad campaigns 
