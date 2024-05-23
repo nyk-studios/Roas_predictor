@@ -3,7 +3,15 @@ from pymongo import MongoClient
 from datetime import datetime
 
 def get_data_from_table(start_date,end_date):
- 
+    ''' 
+    A function that receive the start and end dates for the data fetching
+    of facebook ad campaigns table,
+    and returns a data frame of the data 
+    :start_date: the date the data will start 
+    :end_date: the data will end
+    :return: df which is a dataframe of the data 
+
+    '''
     start = datetime.strptime(start_date,'%Y-%m-%d')
     end = datetime.strptime(end_date,'%Y-%m-%d')
 
