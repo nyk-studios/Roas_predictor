@@ -1,5 +1,56 @@
 components:
-
-  dates:  # the dates for the data fetching 
+  dates:
     start_date: '2022-01-01'
     end_date: '2024-06-01'
+
+  data_preprocessor:
+    
+  
+    - fillna: 
+        cols:        
+          - 'cost'
+          - 'actions'
+          - 'impressions'
+          - 'offsite_conversion_value_fb_pixel_purchase'
+          - 'reach'
+          - 'unique_action_link_click'
+        
+    - get_relative_date:
+        cols:
+          ID_col: 'ad_id'
+          Date_col: 'date'
+    
+    - get_accum_cols:
+        cols: 
+        - cost
+        - impressions
+        - offsite_conversion_value_fb_pixel_purchase
+        - reach
+        - unique_action_link_click
+     
+    
+    - get_dif_from_previous_days:
+        cols: 
+        - cost
+        - impressions
+        - offsite_conversion_value_fb_pixel_purchase
+        - reach
+        - unique_action_link_click
+        days_back: 5 
+    
+    - roas:
+        cols:
+          ID_col: 'ad_id'
+          Date_col: 'date'
+          Cost_col: 'cost'
+          Rev_col: 'offsite_conversion_value_fb_pixel_purchase'
+
+
+  #  - get_days_since_start: True
+  #  - remove_cases_below_accum_cost: 10 # Other options could be 'median', 'mean'
+  #  - remove_ouliers_above_max_accum_roas: 5 
+  #  - create_accum_columns: asdada,sdfsdf
+  #  - target: ratio_max_accum_roas
+    # Change to False if you do not want ratio or multiplicative feature interactions
+    
+

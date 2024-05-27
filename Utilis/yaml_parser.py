@@ -11,6 +11,5 @@ def read_and_create_objects_from_yaml(yaml_path):
 
     # Assuming your YAML structure and processing accordingly
     components = config.get('components', {})
-
     return components
 
