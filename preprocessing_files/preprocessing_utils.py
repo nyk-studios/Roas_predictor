@@ -6,28 +6,29 @@ import sys
 
 class preprocessing_funcs:
     @classmethod
-    def sort_values(cls,config_info):
+    def sort_values(cls,**kwarg):
         """
-        get the dataframe and params of each function and checks that
-        the data is there and returns them
-        :config_info: the data that comes in the kwarg in each function
-        :returns: dataframe and params 
+        get dataframe and column and sort the 
+        dataframe according to the columns
+        in the order of the columns 
+        :df: datafarme to sort
+        :cols: columns to sort the dataframe by 
+        :return: sorted dataframe
         """
         
         
+        # get data and params
+        df, params = preprocessing_funcs.get_data_params(kwarg)
         try: 
-            df =config_info.get('data')
+            cols = params.get('cols')
         except:
-            print('Cannot find dataframe in data_n_params')
-        try: 
-            params = config_info.get('params')
-        except:
-            print('Cannot find columns in data_n_params')
-    
-        return df,params
-    
-    
-    
+            print('Cannot find cols in params')
+
+        print('a')
+
+        df.sort_values(cols,inplace=True)
+
+        return df
     
     
     @classmethod
@@ -184,13 +185,12 @@ class preprocessing_funcs:
         # get the id and date cols 
         try: 
             ID_col = params.get('cols')['ID_col']
-            date_col = params.get('cols')['Date_col']
+            cols = params.get('cols')['other_cols']
+
         except:
             print('Cannot find cols in params')
 
-        # sort the dataframe according to id and date
-        df = df.sort_values([ID_col,date_col],inplace=True)
-
+        
         # for each col in the list create new accumulated col  
         for i in cols:
             # new col name 
@@ -200,21 +200,64 @@ class preprocessing_funcs:
             
         return df
     @classmethod 
-    def roas(df,cost,revenue,output_col):
+    def roas(df,**kwarg):
+        """ 
+        calculate the roas rev/cost
+        :df: dataframe
+        :Cost_col: cost column
+        :Rev_col: revenue columns 
+        :name_new_col: name of new column
+        :output:  output dataw with new column
+        """
+        # get data and params
+        df, params = preprocessing_funcs.get_data_params(kwarg)
+        
+        # get the id and date cols 
+        try: 
+            Cost_col = params.get('cols')['Cost_col']
+            Rev_col = params.get('cols')['Rev_col']
+            name_new_col = params.get('cols')['name_new_col']
+
+        except:
+            print('Cannot find cols in params')
+        # get the roas or accum_roas
+        df[name_new_col] = df[Rev_col]/df[Cost_col]
+
+        return df
+
+    @classmethod 
+    def create_target_max_ratio_roas(df,**kwarg):
         """ 
         calculate the roas rev/cost
         :df: dataframe
         :cost: cost column
-        :revenue: revenue columns 
+        :min_cost_threshold: the threshold abovewhich the max_roas
+        is taken into account  
+        :ID_col: id column
         :output_col: name of output column
         """
-        
-        
-        df[output_col] = df[revenue]/df[cost]
 
-        return df[output_col]
 
+        # get data and params
+        df, params = preprocessing_funcs.get_data_params(kwarg)
         
+        # get the id and date cols 
+        try: 
+            Cost_col = params.get('cols')['Cost_col']
+            ID_col = params.get('cols')['ID_col']
+            min_cost_threshold = params.get('cols')['min_cost_threshold']
+            target_col = params.get('cols')['target_col']
+            new_target_name = params.get('cols')['new_target_name']
+        except:
+            print('Cannot find cols in params')
+        # get the roas or accum_roas
+        
+        df = df.merge(df[df[Cost_col] > min_cost_threshold].groupby(ID_col).max()[target_col].reset_index(name='max_target'),on=ID_col,how='left')
+        df['max_target'].fillna(0.00001,inplace=True)
+        df['target'] = df[target_col]/(df['max_target'])    
+        df.drop('max_target',axis=1,inplace=True)
+        
+        return df 
 
 
 
