@@ -24,7 +24,6 @@ class preprocessing_funcs:
         except:
             print('Cannot find cols in params')
 
-        print('a')
 
         df.sort_values(cols,inplace=True)
 
@@ -220,8 +219,8 @@ class preprocessing_funcs:
 
         except:
             print('Cannot find cols in params')
-        # get the roas or accum_roas
-        df[name_new_col] = df[Rev_col]/df[Cost_col]
+        # get the roas or accum_roas I added the 0.00001 to avoid getting inf 
+        df[name_new_col] = df[Rev_col]/(df[Cost_col] + 0.0001)
 
         return df
 
@@ -254,10 +253,35 @@ class preprocessing_funcs:
         
         df = df.merge(df[df[Cost_col] > min_cost_threshold].groupby(ID_col).max()[target_col].reset_index(name='max_target'),on=ID_col,how='left')
         df['max_target'].fillna(0.00001,inplace=True)
-        df['target'] = df[target_col]/(df['max_target'])    
+        df['target'] = df[target_col]/(df['max_target']) 
+        ########
+        # try this
+        df = df[df['target'] < 5]
+        ###########   
         df.drop('max_target',axis=1,inplace=True)
         
         return df 
 
+    @classmethod 
+    def remove_outliers(df,**kwarg):
+        
+        # get data and params
+        df, params = preprocessing_funcs.get_data_params(kwarg)
+        
+        cols = kwarg['params']['cols']
+        threshold_roas = kwarg['params']['threshold_roas']
+        threshold_target = kwarg['params']['threshold_target']
+        threshold_cost = kwarg['params']['threshold_cost']
+
+
+        
+        df = df[(df['accum_Roas'] < threshold_roas) & 
+                (df['target'] < threshold_target) & 
+                (df['cost'] > threshold_cost)
+                ]
+        
+
+        return df
+    
 
 

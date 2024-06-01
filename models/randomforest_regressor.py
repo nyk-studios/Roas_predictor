@@ -1,17 +1,28 @@
 import pandas as pd
 from models.base_model import BaseModel
 from sklearn.ensemble import RandomForestRegressor
-from models.model_utils import score_mapper
+from sklearn.metrics import mean_squared_error, r2_score
 
-class RandomForestRegressor(BaseModel):
+
+score_mapper = {
+        'mean_squared_error': mean_squared_error ,
+        'r2_score':r2_score,
+       
+    }
+
+
+
+class RandomForestRegressormodel(BaseModel):
     def __init__(self, config):
         self.config = config
-        self.treatment_col = self.config['treatment_col']
-        self.metric = self.config['metric']
-        self.n_estimators = 300
-        self.max_depth = 5
+        self.metric = self.config['model_metric']
+        self.n_estimators = self.config['model_params']['n_estimators']
+        self.max_depth = self.config['model_params']['max_depth']
+        self.min_samples_leaf = self.config['model_params']['min_samples_leaf']
         self.model = RandomForestRegressor(n_estimators=self.n_estimators,
-                                                  max_depth=self.max_depth)
+                                                  max_depth=self.max_depth,
+                                                  min_samples_leaf=self.min_samples_leaf,
+                                                  )
 
     def train(self, X_train, X_val, y_train, y_val):
         
@@ -35,16 +46,24 @@ class RandomForestRegressor(BaseModel):
 
         return score
 
-    def fit(self, X, treatment, y):
-        self.model.fit(X=X, treatment=treatment, y=y)
+    def fit(self, X, y):
+        self.model.fit(X=X, y=y)
 
 
     def get_params(self, deep=True):
-        return {"control_name": self.control_name, "n_estimators": self.n_estimators, "max_depth": self.max_depth}
+        return { "n_estimators": self.n_estimators, "max_depth": self.max_depth, "min_samples_leaf": self.min_samples_leaf,}
 
     def set_params(self, **parameters):
-        for parameter, value in parameters.items():
-            setattr(self, parameter, value)
-        self.model = RandomForestRegressor(control_name=self.control_name,
-                                                  n_estimators=self.n_estimators,
-                                                  max_depth=self.max_depth)
+       self.model.set_params(**parameters)
+       
+        # for parameter, value in parameters.items():
+        #     setattr(self, parameter, value)
+        # self.model =  RandomForestRegressor(n_estimators=self.n_estimators,
+        #                                           max_depth=self.max_depth,
+        #                                           min_samples_leaf=self.min_samples_leaf,
+        #                                           )
+        
+
+
+
+   

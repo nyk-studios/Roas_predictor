@@ -10,7 +10,8 @@ mapper = {
         'get_dif_from_previous_days': preprocessing_funcs.get_dif_from_previous_days,
         'sort_values': preprocessing_funcs.sort_values,
         'roas': preprocessing_funcs.roas,
-        'create_target_max_ratio_roas': preprocessing_funcs.create_target_max_ratio_roas
+        'create_target_max_ratio_roas': preprocessing_funcs.create_target_max_ratio_roas,
+        'remove_outliers':  preprocessing_funcs.remove_outliers
     }
         
 
@@ -61,7 +62,7 @@ class DataProcessor:
 
         train_list = random.sample(all_ads, num_train_ads)
         list_not_in_train = [i for i in all_ads if i not in train_list]
-        val_list = random.sample(all_ads, num_val_ads)
+        val_list = random.sample(list_not_in_train, num_val_ads)
         test_list = [i for i in list_not_in_train if i not in val_list]
 
         X_train = self._df [self._df [split_col].isin(train_list)].drop(target_col,axis=1)

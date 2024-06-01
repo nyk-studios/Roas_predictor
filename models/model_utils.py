@@ -1,9 +1,12 @@
-from sklearn.metrics import mean_squared_error, r2_score
+from models.randomforest_regressor import RandomForestRegressormodel
+from sklearn.ensemble import RandomForestRegressor
 
 
 
-score_mapper = {
-        'mean_squared_error': mean_squared_error ,
-        'r2_score':r2_score,
+
+
+model_mapper = {
+        
+        'randomforest_regressor': RandomForestRegressor
        
     }

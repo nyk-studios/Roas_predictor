@@ -1,7 +1,15 @@
 components:
+  cols_to_drop:
+    - '_id'
+    - 'date'
+    - 'adcampaign_name'
+    - 'adset_name'
+    - 'ad_name'
+    - 'ad_id'
+
   dates:
-    start_date: '2022-01-01'
-    end_date: '2024-06-01'
+    start_date: '2023-10-01'
+    end_date: '2024-05-18'
 
   data_preprocessor:
     - sort_values:
@@ -12,11 +20,11 @@ components:
     - fillna: 
         cols:        
           - 'cost'
-          - 'actions'
           - 'impressions'
           - 'offsite_conversion_value_fb_pixel_purchase'
           - 'reach'
           - 'unique_action_link_click'
+          - 'actions'
         
     - get_relative_date:
         cols:
@@ -33,22 +41,6 @@ components:
             - reach
             - unique_action_link_click
         
-     
-    
-    - get_dif_from_previous_days:
-        cols: 
-        - cost
-        - impressions
-        - offsite_conversion_value_fb_pixel_purchase
-        - reach
-        - unique_action_link_click
-        - accum_cost
-        - accum_impressions
-        - accum_offsite_conversion_value_fb_pixel_purchase
-        - accum_reach
-        - accum_unique_action_link_click
-        days_back: 5 
-    # get the roas 
     - roas:
         cols:
           Cost_col: 'cost'
@@ -70,9 +62,83 @@ components:
           target_col: 'accum_cost'
           new_target_name: 'target'
     
+    # - remove_outliers:
+    #       cols:
+    #         accum_Roas: 'accum_Roas'
+    #         target: 'target'
+    #         accm_cost: 'accm_cost'
+    #       threshold_roas: 5
+    #       threshold_target: 5
+    #       threshold_cost: 10
+        
+
+    
   data_split:
     split_col: 'ad_id'
     target_col: 'target'
     train_ratio: 0.6
     val_ratio: 0.2
     test_ratio: 0.2
+
+
+  model:
+    model_name: 'randomforest_regressor'
+    model_params: 
+        n_estimators: 1
+        max_depth: 1
+        min_samples_leaf: 1
+    model_metric: 'neg_mean_squared_error'
+    optimizer_hyperparmas: 
+        model_metric: 'neg_mean_squared_error'
+        model_parmas: 
+          n_estimators: 300
+          max_depth: 
+            # - 5
+            # - 15
+            - 20 
+          max_features:
+            # - 3
+            #- 7
+            - 10 
+          min_samples_leaf:
+            # - 10
+            - 20
+          #  - 30 
+    roas_optimizer:
+        Id_col: 'ad_id'
+        days_col: 'days_since_start'
+        cost: 'cost'
+        rev: 'offsite_conversion_value_fb_pixel_purchase'
+        budgte_threshold: 0.7
+        cols: 
+          y_predict_low:
+            - 0.7
+            - 0.8
+            - 0.9
+            - 0.95
+          y_predict_high:
+            - 1
+            - 1.05
+            - 1.1
+            - 1.2
+          accum_cost:
+            - 10
+            - 20
+            - 30
+            - 40
+          accum_roas:
+            - 0.95
+            - 0.9
+            - 0.8
+            - 0.7
+          days_since_start:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+
+      
+
+        
+      
