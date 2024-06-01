@@ -12,13 +12,13 @@ def run_roas_prediction():
     #get the Data 
     df = get_data_from_table(start_date,end_date)
     data_processor = DataProcessor(df)
-    df = data_processor.process(yaml_components['data_preprocessor'],df)
+    df = data_processor.process(yaml_components['data_preprocessor'])
     
     # need to remove this once target function works
     
     split_data = data_processor.split_train_val_test_by_col(yaml_components['data_split'])
 
-    #model = model_run(yaml_components['model_type']) 
+    model = RandomForestRegressor() 
     
     a = 2
  

@@ -6,7 +6,6 @@ from models.model_utils import score_mapper
 class RandomForestRegressor(BaseModel):
     def __init__(self, config):
         self.config = config
-        self.control_name = self.config['control_group']
         self.treatment_col = self.config['treatment_col']
         self.metric = self.config['metric']
         self.n_estimators = 300
