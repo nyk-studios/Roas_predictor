@@ -30,8 +30,8 @@ class DataHandle:
         list_cur = list(cursor)
         df = pd.DataFrame(list_cur)
         
-        if len(df[df['date'] > datetime.now() - timedelta(days=1)]) == 0:
-            raise ValueError(f'There are no ads from yesterday to analyze')
+        #if len(df[df['date'] > datetime.now() - timedelta(days=1)]) == 0:
+         #   raise ValueError(f'There are no ads from yesterday to analyze')
 
 
 
@@ -83,8 +83,8 @@ class DataHandle:
             ).rename(columns = {cost_col:'7_days_cost',rev_col:'7_days_rev'})
             data_4_days = data_new[data_new[date_col] > today - timedelta(days= 4) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'4_days_cost',rev_col:'4_days_rev'})
-            data_1_days = data_new[data_new[date_col] > today - timedelta(days= 2) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
-            ).rename(columns = {cost_col:'2_days_cost',rev_col:'2_days_rev'})
+            data_1_days = data_new[data_new[date_col] > today - timedelta(days= 1) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
+            ).rename(columns = {cost_col:'1_days_cost',rev_col:'1_days_rev'})
             
             # get Roas of each option 
             data_tot['Lifetime'] = data_tot['tot_rev']/data_tot['tot_cost']
