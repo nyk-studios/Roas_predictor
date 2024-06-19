@@ -60,7 +60,11 @@ def run_roas_prediction():
                               yaml_components['model']['roas_optimizer']['cost'],
                               yaml_components['model']['roas_optimizer']['rev'],
                               yaml_components['model']['roas_optimizer']['date'])
-    
+    # write metadata to table 
+    DataHandle.write_meta_data(results)
+    # write results to table 
+    DataHandle.write_algo_data(out_data)
+
     a = 2
 if __name__ == "__main__":
     run_roas_prediction()

@@ -29,9 +29,12 @@ class DataHandle:
         cursor = collection_name.find({'date': {'$lt': end, '$gte': start}})
         list_cur = list(cursor)
         df = pd.DataFrame(list_cur)
-        
-        #if len(df[df['date'] > datetime.now() - timedelta(days=1)]) == 0:
-         #   raise ValueError(f'There are no ads from yesterday to analyze')
+        yesterday = today - timedelta(days=1)
+        yesterday = yesterday.strftime('%Y-%m-%d')
+
+
+        if len(df[df['date'] >= yesterday ]) == 0:
+           raise ValueError(f'There are no ads from yesterday to analyze')
 
 
 
@@ -47,8 +50,10 @@ class DataHandle:
            """
         client = MongoClient('mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test')
         mydatabase = client.calculations
-        collection_name = mydatabase.fb_roas_prediction
+        collection_name = mydatabase.road_pred_metadata
         collection_name.insert_many(df.to_dict('records'))
+
+
 
     @classmethod 
     def write_algo_data(cls,df):
@@ -59,7 +64,7 @@ class DataHandle:
            """
         client = MongoClient('mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test')
         mydatabase = client.calculations
-        collection_name = mydatabase.fb_roas_prediction
+        collection_name = mydatabase.roas_pred_results
         collection_name.insert_many(df.to_dict('records'))
 
     @classmethod
@@ -79,11 +84,11 @@ class DataHandle:
             # create Lifetime Roas
             data_tot = data_new.groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'tot_cost',rev_col:'tot_rev'})
-            data_7_days = data_new[data_new[date_col] > today - timedelta(days= 7) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
+            data_7_days = data_new[data_new[date_col] >= today - timedelta(days= 7) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'7_days_cost',rev_col:'7_days_rev'})
-            data_4_days = data_new[data_new[date_col] > today - timedelta(days= 4) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
+            data_4_days = data_new[data_new[date_col] >= today - timedelta(days= 4) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'4_days_cost',rev_col:'4_days_rev'})
-            data_1_days = data_new[data_new[date_col] > today - timedelta(days= 1) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
+            data_1_days = data_new[data_new[date_col] >= today - timedelta(days= 1) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'1_days_cost',rev_col:'1_days_rev'})
             
             # get Roas of each option 
