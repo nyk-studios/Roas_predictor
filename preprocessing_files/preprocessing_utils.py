@@ -256,6 +256,7 @@ class preprocessing_funcs:
         df['target'] = df[target_col]/(df['max_target']) 
         ########
         # try this
+        
         df = df[df['target'] < 5]
         ###########   
         df.drop('max_target',axis=1,inplace=True)
@@ -264,7 +265,13 @@ class preprocessing_funcs:
 
     @classmethod 
     def remove_outliers(df,**kwarg):
-        
+        """
+        remove outliers according to threshold
+        set in the config file
+        :df: historical data
+        :kwarg: contains the thresholds set in the config
+        :output: df without the outliers rows
+        """
         # get data and params
         df, params = preprocessing_funcs.get_data_params(kwarg)
         

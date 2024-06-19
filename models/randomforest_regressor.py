@@ -13,6 +13,10 @@ score_mapper = {
 
 
 class RandomForestRegressormodel(BaseModel):
+    """ 
+    wrapper for the random forestregressor 
+    deprecated
+    """
     def __init__(self, config):
         self.config = config
         self.metric = self.config['model_metric']
@@ -56,13 +60,7 @@ class RandomForestRegressormodel(BaseModel):
     def set_params(self, **parameters):
        self.model.set_params(**parameters)
        
-        # for parameter, value in parameters.items():
-        #     setattr(self, parameter, value)
-        # self.model =  RandomForestRegressor(n_estimators=self.n_estimators,
-        #                                           max_depth=self.max_depth,
-        #                                           min_samples_leaf=self.min_samples_leaf,
-        #                                           )
-        
+  
 
 
 

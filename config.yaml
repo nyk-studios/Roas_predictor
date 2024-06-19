@@ -8,8 +8,9 @@ components:
     - 'ad_id'
 
   dates:
-    start_date: '2023-10-01'
-    end_date: '2024-05-18'
+   # start_date: '2023-10-01'
+   #end_date: '2024-05-18'
+   num_months: 8
 
   data_preprocessor:
     - sort_values:
@@ -25,6 +26,7 @@ components:
           - 'reach'
           - 'unique_action_link_click'
           - 'actions'
+          
         
     - get_relative_date:
         cols:
@@ -59,7 +61,7 @@ components:
           Cost_col: 'cost'
           ID_col: 'ad_id'
           min_cost_threshold: 10
-          target_col: 'accum_cost'
+          target_col: 'accum_Roas'
           new_target_name: 'target'
     
     # - remove_outliers:
@@ -79,6 +81,7 @@ components:
     train_ratio: 0.6
     val_ratio: 0.2
     test_ratio: 0.2
+    num_dyas_run_data: 1
 
 
   model:
@@ -93,23 +96,24 @@ components:
         model_parmas: 
           n_estimators: 300
           max_depth: 
-            # - 5
-            # - 15
+            - 5
+            - 15
             - 20 
           max_features:
-            # - 3
-            #- 7
+            - 3
+            - 7
             - 10 
           min_samples_leaf:
-            # - 10
+            - 10
             - 20
-          #  - 30 
+            - 30 
     roas_optimizer:
         Id_col: 'ad_id'
         days_col: 'days_since_start'
         cost: 'cost'
         rev: 'offsite_conversion_value_fb_pixel_purchase'
-        budgte_threshold: 0.7
+        date: 'date'
+        budgte_threshold: 0.6
         cols: 
           y_predict_low:
             - 0.7
