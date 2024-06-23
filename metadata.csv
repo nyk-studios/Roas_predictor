@@ -1,3 +1,0 @@
-params_checked,tot_budget,roas_before_algo,roas_after_algo,percent_out_of_budget,data_type,regression_score
-"{'y_predict_low': 0.7, 'y_predict_high': 1, 'accum_cost': 40, 'accum_roas': 0.7, 'days_since_start': 1}",389354.87,0.82,0.89,0.7,val,0.7228321076227223
-"{'y_predict_low': 0.7, 'y_predict_high': 1, 'accum_cost': 40, 'accum_roas': 0.7, 'days_since_start': 1}",453057.9199999999,0.85,0.9,0.66,test,0.6474329759169579

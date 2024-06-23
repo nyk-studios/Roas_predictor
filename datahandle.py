@@ -1,7 +1,8 @@
 import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime,timedelta
-
+from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 class DataHandle:
     @classmethod
@@ -13,8 +14,8 @@ class DataHandle:
         :start_date: the date the data will start 
         :end_date: the data will end
         :return: df which is a dataframe of the data 
-
         '''
+        Mongo_Client = dotenv_values(".env")
         today = datetime.now()
         if 'start_date' in config:
             start = datetime.strptime(config['start_date'],'%Y-%m-%d')
@@ -23,7 +24,7 @@ class DataHandle:
             end = today
             start = end - timedelta(days= 30 * config['num_months'])
 
-        client = MongoClient('mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test')
+        client = MongoClient(Mongo_Client['mongo_client'])
         mydatabase = client.calculations
         collection_name = mydatabase.fb_roas_prediction
         cursor = collection_name.find({'date': {'$lt': end, '$gte': start}})
@@ -48,7 +49,8 @@ class DataHandle:
           into the meta data table in the database
           :df: meta data dataframe 
            """
-        client = MongoClient('mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test')
+        Mongo_Client = dotenv_values(".env")
+        client = MongoClient(Mongo_Client['mongo_client'])
         mydatabase = client.calculations
         collection_name = mydatabase.road_pred_metadata
         collection_name.insert_many(df.to_dict('records'))
@@ -62,7 +64,8 @@ class DataHandle:
           into the algo results table in the database
           :df: algo dataframe 
            """
-        client = MongoClient('mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test')
+        Mongo_Client = dotenv_values(".env")
+        client = MongoClient(Mongo_Client['mongo_client'])
         mydatabase = client.calculations
         collection_name = mydatabase.roas_pred_results
         collection_name.insert_many(df.to_dict('records'))
@@ -88,7 +91,7 @@ class DataHandle:
             ).rename(columns = {cost_col:'7_days_cost',rev_col:'7_days_rev'})
             data_4_days = data_new[data_new[date_col] >= today - timedelta(days= 4) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'4_days_cost',rev_col:'4_days_rev'})
-            data_1_days = data_new[data_new[date_col] >= today - timedelta(days= 1) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
+            data_1_days = data_new[data_new[date_col] >= today - timedelta(days= 2) ].groupby(id_col).sum()[[cost_col,rev_col]].reset_index(            
             ).rename(columns = {cost_col:'1_days_cost',rev_col:'1_days_rev'})
             
             # get Roas of each option 
