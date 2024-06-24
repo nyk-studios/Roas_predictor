@@ -50,9 +50,12 @@ def run_roas_prediction():
     # find the predicted y
     report_data['y_predict']  = model.predict(report_data.drop(cols_to_drop,axis=1))
     # find the ads to drop according to the model 
-    report_ad_stop =  RoasModel.run_model(report_data,results['params_checked'].iloc[0],
-                yaml_components['model']['roas_optimizer']['Id_col'],yaml_components['model']['roas_optimizer']['cost'],
-                  yaml_components['model']['roas_optimizer']['rev']) 
+    report_ad_stop =  RoasModel.ad_drop(report_data,
+                                        results['params_checked'].iloc[0],
+                                        yaml_components['model']['roas_optimizer']['Id_col'],
+                                        yaml_components['model']['roas_optimizer']['cost'],
+                                        yaml_components['model']['roas_optimizer']['rev']) 
+   
     list_ads_to_remove = report_ad_stop[ yaml_components['model']['roas_optimizer']['Id_col']].unique().tolist()
     
     out_data = DataHandle.prepare_output(report_data,list_ads_to_remove,

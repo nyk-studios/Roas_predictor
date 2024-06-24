@@ -25,6 +25,34 @@ class RoasModel:
         
         
         return df_ads_to_stop
+    
+    
+    @classmethod 
+    def ad_drop(cls,data,params,Id_col,cost_col,rev_col):
+        
+        
+        y_predict_low = params['y_predict_low']
+        y_predict_high = params['y_predict_high']
+        accum_cost = params['accum_cost']
+        accum_roas = params['accum_roas']
+        days_since_start = params['days_since_start']
+
+
+
+        data_new = data.drop_duplicates(Id_col,keep='last')
+
+        df_ads_to_stop = data_new[(data_new['y_predict'] > y_predict_low) &
+                                  (data_new['y_predict'] < y_predict_high) &
+                                  (data_new['accum_cost'] > accum_cost) &
+                                  (data_new['accum_Roas'] < accum_roas) &
+                                  (data_new['days_since_start'] > days_since_start) 
+                                   ]
+        
+        
+        
+        
+        return df_ads_to_stop
+
 
     @classmethod 
     def cal_results(cls,data,ads_stop,cost_col,rev_col):
