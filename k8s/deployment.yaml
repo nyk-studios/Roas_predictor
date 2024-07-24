@@ -1,7 +1,8 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: roas-prediction-cron
+  namespace: default
 spec:
   schedule: '1 * * * *'
   jobTemplate:
@@ -11,4 +12,8 @@ spec:
           containers:
             - name: roas-prediction-container
               image: 450122606188.dkr.ecr.us-east-1.amazonaws.com/roas-prediction:latest
-          restartPolicy: OnFailure
+              imagePullPolicy: Always
+              env:
+                - name: Mongo_Client
+                  value: mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test
+          restartPolicy: Never
