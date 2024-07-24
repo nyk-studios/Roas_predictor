@@ -17,5 +17,3 @@ spec:
                 - name: MONGO_URL
                   value: mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test
           restartPolicy: Never
-          concurrencyPolicy: Forbid
-          
