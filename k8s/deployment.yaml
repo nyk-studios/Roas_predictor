@@ -4,7 +4,7 @@ metadata:
   name: roas-prediction-cron
   namespace: default
 spec:
-  schedule: '1 * * * *'
+  schedule: '0 1 * * *'
   jobTemplate:
     spec:
       template:
