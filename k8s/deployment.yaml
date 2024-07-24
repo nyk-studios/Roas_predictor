@@ -1,0 +1,14 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: roas-prediction-cron
+spec:
+  schedule: '1 * * * *'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: roas-prediction-container
+              image: 450122606188.dkr.ecr.us-east-1.amazonaws.com/roas-prediction:latest
+          restartPolicy: OnFailure
