@@ -14,6 +14,6 @@ spec:
               image: 450122606188.dkr.ecr.us-east-1.amazonaws.com/roas-prediction:latest
               imagePullPolicy: Always
               env:
-                - name: Mongo_Client
+                - name: MONGO_URL
                   value: mongodb+srv://eran:MzI4f8okS2763d8Q@tmscluster.jtyul.mongodb.net/test
           restartPolicy: Never

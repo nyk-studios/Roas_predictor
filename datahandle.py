@@ -1,7 +1,6 @@
 import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime,timedelta
-from dotenv import load_dotenv
 from dotenv import dotenv_values
 
 class DataHandle:
@@ -15,7 +14,7 @@ class DataHandle:
         :end_date: the data will end
         :return: df which is a dataframe of the data 
         '''
-        Mongo_Client = dotenv_values(".env")
+        env = dotenv_values(".env")
         today = datetime.now()
         if 'start_date' in config:
             start = datetime.strptime(config['start_date'],'%Y-%m-%d')
@@ -24,7 +23,7 @@ class DataHandle:
             end = today
             start = end - timedelta(days= 30 * config['num_months'])
 
-        client = MongoClient(Mongo_Client['mongo_client'])
+        client = MongoClient(env['MONGO_URL'])
         mydatabase = client.calculations
         collection_name = mydatabase.fb_roas_prediction
         cursor = collection_name.find({'date': {'$lt': end, '$gte': start}})
@@ -33,12 +32,8 @@ class DataHandle:
         yesterday = today - timedelta(days=1)
         yesterday = yesterday.strftime('%Y-%m-%d')
 
-
         if len(df[df['date'] >= yesterday ]) == 0:
            raise ValueError(f'There are no ads from yesterday to analyze')
-
-
-
 
         return df
 
@@ -54,8 +49,6 @@ class DataHandle:
         mydatabase = client.calculations
         collection_name = mydatabase.road_pred_metadata
         collection_name.insert_many(df.to_dict('records'))
-
-
 
     @classmethod 
     def write_algo_data(cls,df):
